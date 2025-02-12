@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import autoprefixer from 'autoprefixer'
+import { config } from 'dotenv'
+
+config()
 
 export default defineConfig(() => {
   return {
