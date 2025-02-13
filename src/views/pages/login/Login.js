@@ -15,14 +15,12 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import { useDispatch } from 'react-redux'
 import ApiService from '../../../utils/Axios'
 import { localStorageKey, localStorageService } from '../../../utils/localStorageService'
 
 const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const dispatch = useDispatch()
   const Navigate = useNavigate()
   const onLoginPressed = async () => {
     let data = {
@@ -34,7 +32,8 @@ const Login = () => {
     let token = res.data.access_token.token
     if (res.data.success) {
       localStorageService.setData(localStorageKey.jwtToken, token)
-      dispatch({ type: 'set', isAuthenticated: true })
+      localStorageService.setData(localStorageKey.authData, true)
+      localStorageService.setData(localStorageKey.user, res.data.data)
       Navigate('/dashboard')
     }
   }
@@ -76,11 +75,6 @@ const Login = () => {
                       <CCol xs={6}>
                         <CButton color="primary" className="px-4" onClick={onLoginPressed}>
                           Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
                         </CButton>
                       </CCol>
                     </CRow>
