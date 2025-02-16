@@ -15,7 +15,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import ApiService from '../../../utils/Axios'
+import ApiService from '../../../utils/axios'
 import { localStorageKey, localStorageService } from '../../../utils/localStorageService'
 
 const Login = () => {
