@@ -8,20 +8,20 @@ import { Box, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
 
-const MMenu = () => {
+const MUser = () => {
   const [todo, setTodo] = useState([])
   const Navigate = useNavigate()
   const TodoGetData = async () => {
-    const res = await ApiService.getDataJWT('/mMenu')
+    const res = await ApiService.getDataJWT('/mUser')
     setTodo(res.data.data)
   }
 
   const TodoDeleteData = async (id) => {
     fireNotif.notifWarning('Delete this item?').then(async (swalRes) => {
       if (swalRes.isConfirmed) {
-        const resAPi = await ApiService.deleteDataJWT('/mMenu', id)
+        const resAPi = await ApiService.deleteDataJWT('/mUser', id)
         if (resAPi.data.success) {
-          fireNotif.notifSuccess('Succesfully delete menu').then((res) => {
+          fireNotif.notifSuccess('Succesfully delete data').then((res) => {
             if (res.isConfirmed) {
               TodoGetData()
             }
@@ -40,18 +40,28 @@ const MMenu = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'name', //simple recommended way to define a column
-        header: 'Name', //custom props
+        accessorKey: 'first_name', //simple recommended way to define a column
+        header: 'First Name', //custom props
         enableHiding: false, //disable a feature for this column
       },
       {
-        accessorKey: 'route', //simple recommended way to define a column
-        header: 'Route', //custom props
+        accessorKey: 'last_name', //simple recommended way to define a column
+        header: 'Last Name', //custom props
         enableHiding: false, //disable a feature for this column
       },
       {
-        accessorKey: 'description', //simple recommended way to define a column
-        header: 'Description', //custom props
+        accessorKey: 'username', //simple recommended way to define a column
+        header: 'Username', //custom props
+        enableHiding: false, //disable a feature for this column
+      },
+      {
+        accessorKey: 'email', //simple recommended way to define a column
+        header: 'Email', //custom props
+        enableHiding: false, //disable a feature for this column
+      },
+      {
+        accessorKey: 'role.name', //simple recommended way to define a column
+        header: 'Roles', //custom props
         enableHiding: false, //disable a feature for this column
       },
       {
@@ -75,7 +85,7 @@ const MMenu = () => {
       const action = (
         <Box>
           <IconButton
-            onClick={() => Navigate('/mastermenu/update', { state: { id: row.original.id } })}
+            onClick={() => Navigate('/masteruser/update', { state: { id: row.original.id } })}
           >
             <CIcon icon={cilPen} className="text-warning" size="lg" />
           </IconButton>
@@ -92,13 +102,13 @@ const MMenu = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Master Menu</CCardHeader>
+        <CCardHeader>Master Role</CCardHeader>
         <CCardBody>
           <CRow>
             <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
               <CButton
                 onClick={() => {
-                  Navigate('/mastermenu/create')
+                  Navigate('/masteruser/create')
                 }}
                 color="primary"
               >
@@ -117,4 +127,4 @@ const MMenu = () => {
   )
 }
 
-export default MMenu
+export default MUser

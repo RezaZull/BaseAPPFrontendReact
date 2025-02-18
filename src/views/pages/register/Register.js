@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import ApiService from '../../../utils/Axios'
+import ApiService from '../../../utils/axios'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
 
@@ -44,6 +44,7 @@ const Register = () => {
       password: password,
       password_confirmation: password_confirmation,
       id_m_roles: '1',
+      flag_active: true,
     }
     const res = await ApiService.postData('/register', data)
     if (res.status === 201) {

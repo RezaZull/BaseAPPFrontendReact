@@ -8,7 +8,6 @@ import {
   CInputGroupText,
   CFormInput,
   CButton,
-  CFormTextarea,
   CFormSwitch,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
@@ -16,27 +15,23 @@ import ApiService from '../../../../utils/axios'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
-const MMenuCreate = () => {
+const MRoleCreate = () => {
   const [name, setName] = useState('')
-  const [route, setRoute] = useState('')
-  const [description, setDescription] = useState('')
-  const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
+  const [flag_active, setFlagActive] = useState(true)
   const todoSave = async () => {
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
-      route,
-      description,
       flag_active,
       user_id: userId.user.id,
     }
-    const resAPi = await ApiService.postDataJWT('/mMenu', data)
+    const resAPi = await ApiService.postDataJWT('/mRole', data)
     console.log(resAPi)
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
-          Navigate('/mastermenu')
+          Navigate('/masterrole')
         }
       })
     }
@@ -45,36 +40,19 @@ const MMenuCreate = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Form Create Menu</CCardHeader>
+        <CCardHeader>Form Create User</CCardHeader>
         <CCardBody>
           <CForm onSubmit={todoSave}>
             <CInputGroup className="mb-3">
               <CInputGroupText>Name</CInputGroupText>
               <CFormInput
                 type="text"
-                placeholder="Menu Name"
+                placeholder="Role Name"
                 value={name}
                 onChange={(val) => setName(val.target.value)}
                 required
               />
             </CInputGroup>
-            <CInputGroup className="mb-3">
-              <CInputGroupText>Route</CInputGroupText>
-              <CFormInput
-                type="text"
-                placeholder="Menu Route"
-                value={route}
-                onChange={(val) => setRoute(val.target.value)}
-                required
-              />
-            </CInputGroup>
-            <CFormTextarea
-              className="mb-3"
-              label="Menu Description"
-              value={description}
-              onChange={(val) => setDescription(val.target.value)}
-              required
-            />
             <CFormSwitch
               className="mb-3"
               label="Active"
@@ -93,4 +71,4 @@ const MMenuCreate = () => {
   )
 }
 
-export default MMenuCreate
+export default MRoleCreate
