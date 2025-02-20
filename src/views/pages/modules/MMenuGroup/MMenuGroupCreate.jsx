@@ -1,0 +1,104 @@
+import React, { useEffect, useState } from 'react'
+import {
+  CCard,
+  CCardHeader,
+  CCardBody,
+  CForm,
+  CInputGroup,
+  CInputGroupText,
+  CFormInput,
+  CButton,
+  CFormTextarea,
+  CFormSwitch,
+  CFormSelect,
+} from '@coreui/react'
+import { useNavigate } from 'react-router-dom'
+import ApiService from '../../../../utils/axios'
+import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
+import fireNotif from '../../../../utils/fireNotif'
+
+const MMenuGroupCreate = () => {
+  const [name, setName] = useState('')
+  const [id_m_roles, setIdMRoles] = useState('')
+  const [roles, setRoles] = useState([])
+  const [flag_active, setFlagActive] = useState(true)
+  const Navigate = useNavigate()
+  const todoSave = async () => {
+    const userId = await localStorageService.getData(localStorageKey.user)
+    const data = {
+      name,
+      flag_active,
+      id_m_roles,
+      user_id: userId.user.id,
+    }
+    const resAPi = await ApiService.postDataJWT('/mMenuGroup', data)
+    console.log(resAPi)
+    if (resAPi.data.success) {
+      fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
+        if (resSwal.isConfirmed) {
+          Navigate('/mastermenugroup')
+        }
+      })
+    }
+  }
+
+  const todoGetData = async () => {
+    const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
+    setRoles(resAPI.data.data)
+    setIdMRoles(resAPI.data.data[0].id)
+  }
+
+  useEffect(() => {
+    todoGetData()
+  }, [])
+
+  return (
+    <>
+      <CCard className="mb-4">
+        <CCardHeader>Form Create Menu Group</CCardHeader>
+        <CCardBody>
+          <CForm onSubmit={todoSave}>
+            <CInputGroup className="mb-3">
+              <CInputGroupText>Name</CInputGroupText>
+              <CFormInput
+                type="text"
+                placeholder="Menu Group Name"
+                value={name}
+                onChange={(val) => setName(val.target.value)}
+                required
+              />
+            </CInputGroup>
+
+            <CFormSelect
+              className="mb-3"
+              label="Roles"
+              value={id_m_roles}
+              onChange={(val) => setIdMRoles(val.target.value)}
+            >
+              {roles.map((data, idx) => {
+                return (
+                  <option key={idx} value={data.id}>
+                    {data.name}
+                  </option>
+                )
+              })}
+            </CFormSelect>
+            <CFormSwitch
+              className="mb-3"
+              label="Active"
+              value={flag_active}
+              size="lg"
+              onChange={(val) => setFlagActive(val.target.checked)}
+              defaultChecked={flag_active}
+            />
+            <CButton type="submit" color="primary">
+              Submit
+            </CButton>
+          </CForm>
+        </CCardBody>
+      </CCard>
+    </>
+  )
+}
+
+export default MMenuGroupCreate

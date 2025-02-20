@@ -13,6 +13,13 @@ const MRoleUpdate = React.lazy(() => import('./views/pages/modules/MRole/MRoleUp
 const MUser = React.lazy(() => import('./views/pages/modules/MUser/MUser'))
 const MUserCreate = React.lazy(() => import('./views/pages/modules/MUser/MUserCreate'))
 const MUserUpdate = React.lazy(() => import('./views/pages/modules/MUser/MUserUpdate'))
+const MMenuGroup = React.lazy(() => import('./views/pages/modules/MMenuGroup/MMenuGroup'))
+const MMenuGroupDetail = React.lazy(
+  () => import('./views/pages/modules/MMenuGroup/MMenuGroupDetail'),
+)
+const MMenuGroupCreate = React.lazy(
+  () => import('./views/pages/modules/MMenuGroup/MMenuGroupCreate'),
+)
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -30,6 +37,9 @@ const routes = [
   { path: '/masteruser', name: 'MUser', element: MUser },
   { path: '/masteruser/create', name: 'MUserCreate', element: MUserCreate },
   { path: '/masteruser/update', name: 'MUserUpdate', element: MUserUpdate },
+  { path: '/mastermenugroup', name: 'MMenuGroup', element: MMenuGroup },
+  { path: '/mastermenugroup/create', name: 'MMenuGroupCreate', element: MMenuGroupCreate },
+  { path: '/mastermenugroup/detail', name: 'MMenuGroupDetail', element: MMenuGroupDetail },
 ]
 
 export default routes

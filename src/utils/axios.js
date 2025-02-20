@@ -28,6 +28,7 @@ apiClient.interceptors.response.use(
         confirmButtonText: 'continue',
       }).then((res) => {
         if (res.isConfirmed) {
+          console.log('logout')
           return redirect('/login')
         }
       })
