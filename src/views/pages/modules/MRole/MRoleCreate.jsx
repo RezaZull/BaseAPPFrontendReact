@@ -19,7 +19,8 @@ const MRoleCreate = () => {
   const [name, setName] = useState('')
   const Navigate = useNavigate()
   const [flag_active, setFlagActive] = useState(true)
-  const todoSave = async () => {
+  const todoSave = async (e) => {
+    e.preventDefault()
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
@@ -56,10 +57,9 @@ const MRoleCreate = () => {
             <CFormSwitch
               className="mb-3"
               label="Active"
-              value={flag_active}
+              checked={flag_active}
               size="lg"
               onChange={(val) => setFlagActive(val.target.checked)}
-              defaultChecked={flag_active}
             />
             <CButton type="submit" color="primary">
               Submit

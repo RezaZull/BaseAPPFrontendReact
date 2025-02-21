@@ -20,13 +20,8 @@ const MRoleUpdate = () => {
   const Navigate = useNavigate()
   const [flag_active, setFlagActive] = useState(true)
   const location = useLocation()
-  const todoGetData = async () => {
-    const id = location.state.id
-    const resAPI = await ApiService.getDataJWT(`/mRole/${id}`)
-    const data = resAPI.data.data
-    setName(data.name)
-  }
-  const todoUpdate = async () => {
+  const todoUpdate = async (e) => {
+    e.preventDefault()
     const id = location.state.id
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
@@ -46,8 +41,14 @@ const MRoleUpdate = () => {
   }
 
   useEffect(() => {
+    const todoGetData = async () => {
+      const id = location.state.id
+      const resAPI = await ApiService.getDataJWT(`/mRole/${id}`)
+      const data = resAPI.data.data
+      setName(data.name)
+    }
     todoGetData()
-  }, [])
+  }, [location.state.id])
 
   return (
     <>
@@ -68,10 +69,9 @@ const MRoleUpdate = () => {
             <CFormSwitch
               className="mb-3"
               label="Active"
-              value={flag_active}
+              checked={flag_active}
               size="lg"
               onChange={(val) => setFlagActive(val.target.checked)}
-              defaultChecked={flag_active}
             />
             <CButton type="submit" color="primary">
               Submit

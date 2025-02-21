@@ -26,22 +26,8 @@ const MUserUpdate = () => {
   const [roles, setRoles] = useState([])
   const Navigate = useNavigate()
   const location = useLocation()
-  const todoGetData = async () => {
-    const id = location.state.id
-    const resAPI = await ApiService.getDataJWT(`/mUser/${id}`)
-    const data = resAPI.data.data
-    const resAPIRole = await ApiService.getDataJWT(
-      '/mRole?searchParam=flag_active&searchValue=true',
-    )
-    setRoles(resAPIRole.data.data)
-    setFirstName(data.first_name)
-    setLastName(data.last_name)
-    setUsername(data.username)
-    setEmail(data.email)
-    setIdMRoles(data.id_m_roles)
-    setFlagActive(data.flag_active)
-  }
-  const todoUpdate = async () => {
+  const todoUpdate = async (e) => {
+    e.preventDefault()
     const id = location.state.id
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
@@ -66,8 +52,23 @@ const MUserUpdate = () => {
   }
 
   useEffect(() => {
+    const todoGetData = async () => {
+      const id = location.state.id
+      const resAPI = await ApiService.getDataJWT(`/mUser/${id}`)
+      const data = resAPI.data.data
+      const resAPIRole = await ApiService.getDataJWT(
+        '/mRole?searchParam=flag_active&searchValue=true',
+      )
+      setRoles(resAPIRole.data.data)
+      setFirstName(data.first_name)
+      setLastName(data.last_name)
+      setUsername(data.username)
+      setEmail(data.email)
+      setIdMRoles(data.id_m_roles)
+      setFlagActive(data.flag_active)
+    }
     todoGetData()
-  }, [])
+  }, [location.state.id])
 
   return (
     <>
@@ -132,10 +133,9 @@ const MUserUpdate = () => {
             <CFormSwitch
               className="mb-3"
               label="Active"
-              value={flag_active}
+              checked={flag_active}
               size="lg"
               onChange={(val) => setFlagActive(val.target.checked)}
-              defaultChecked={flag_active}
             />
             <CButton type="submit" color="primary">
               Submit

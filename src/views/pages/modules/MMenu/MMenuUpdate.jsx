@@ -23,16 +23,8 @@ const MMenuUpdate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
   const location = useLocation()
-  const todoGetData = async () => {
-    const id = location.state.id
-    const resAPI = await ApiService.getDataJWT(`/mMenu/${id}`)
-    const data = resAPI.data.data
-    setName(data.name)
-    setRoute(data.route)
-    setDescription(data.description)
-    setFlagActive(data.flag_active)
-  }
-  const todoUpdate = async () => {
+  const todoUpdate = async (e) => {
+    e.preventDefault()
     const id = location.state.id
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
@@ -54,8 +46,17 @@ const MMenuUpdate = () => {
   }
 
   useEffect(() => {
+    const todoGetData = async () => {
+      const id = location.state.id
+      const resAPI = await ApiService.getDataJWT(`/mMenu/${id}`)
+      const data = resAPI.data.data
+      setName(data.name)
+      setRoute(data.route)
+      setDescription(data.description)
+      setFlagActive(data.flag_active)
+    }
     todoGetData()
-  }, [])
+  }, [location.state.id])
 
   return (
     <>
@@ -93,10 +94,9 @@ const MMenuUpdate = () => {
             <CFormSwitch
               className="mb-3"
               label="Active"
-              value={flag_active}
+              checked={flag_active}
               size="lg"
               onChange={(val) => setFlagActive(val.target.checked)}
-              defaultChecked={flag_active}
             />
             <CButton type="submit" color="primary">
               Submit

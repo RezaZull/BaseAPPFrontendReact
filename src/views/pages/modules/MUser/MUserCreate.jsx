@@ -30,7 +30,8 @@ const MUserCreate = () => {
     const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
     setRoles(resAPI.data.data)
   }
-  const todoSave = async () => {
+  const todoSave = async (e) => {
+    e.preventDefault()
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       first_name,
@@ -128,10 +129,9 @@ const MUserCreate = () => {
             <CFormSwitch
               className="mb-3"
               label="Active"
-              value={flag_active}
+              checked={flag_active}
               size="lg"
               onChange={(val) => setFlagActive(val.target.checked)}
-              defaultChecked={flag_active}
             />
             <CButton type="submit" color="primary">
               Submit

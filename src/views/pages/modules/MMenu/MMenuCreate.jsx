@@ -22,7 +22,8 @@ const MMenuCreate = () => {
   const [description, setDescription] = useState('')
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
-  const todoSave = async () => {
+  const todoSave = async (e) => {
+    e.preventDefault()
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
@@ -32,7 +33,6 @@ const MMenuCreate = () => {
       user_id: userId.user.id,
     }
     const resAPi = await ApiService.postDataJWT('/mMenu', data)
-    console.log(resAPi)
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -78,10 +78,9 @@ const MMenuCreate = () => {
             <CFormSwitch
               className="mb-3"
               label="Active"
-              value={flag_active}
+              checked={flag_active}
               size="lg"
               onChange={(val) => setFlagActive(val.target.checked)}
-              defaultChecked={flag_active}
             />
             <CButton type="submit" color="primary">
               Submit

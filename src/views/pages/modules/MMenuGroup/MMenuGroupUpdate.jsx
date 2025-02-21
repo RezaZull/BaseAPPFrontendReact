@@ -11,19 +11,22 @@ import {
   CFormSwitch,
   CFormSelect,
 } from '@coreui/react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
-const MMenuGroupCreate = () => {
+const MMenuGroupUpdate = () => {
   const [name, setName] = useState('')
   const [id_m_roles, setIdMRoles] = useState('')
   const [roles, setRoles] = useState([])
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
-  const todoSave = async (e) => {
+  const location = useLocation()
+
+  const todoUpdate = async (e) => {
     e.preventDefault()
+    const menuGroupId = location.state.id
     const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
@@ -31,33 +34,37 @@ const MMenuGroupCreate = () => {
       id_m_roles,
       user_id: userId.user.id,
     }
-    const resAPi = await ApiService.postDataJWT('/mMenuGroup', data)
+    const resAPi = await ApiService.updateDataJWT(`/mMenuGroup/${menuGroupId}`, data)
     console.log(resAPi)
     if (resAPi.data.success) {
-      fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
+      fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
-          Navigate('/mastermenugroup')
+          Navigate(-1)
         }
       })
     }
   }
 
-  const todoGetData = async () => {
-    const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
-    setRoles(resAPI.data.data)
-    setIdMRoles(resAPI.data.data[0].id)
-  }
-
   useEffect(() => {
+    const todoGetData = async () => {
+      const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
+      setRoles(resAPI.data.data)
+      const menuGroupId = location.state.id
+      const resMenuGroup = await ApiService.getDataJWT(`/mMenuGroup/${menuGroupId}`)
+      const dataMenuGroup = resMenuGroup.data.data
+      setName(dataMenuGroup.name)
+      setFlagActive(dataMenuGroup.flag_active)
+      setIdMRoles(dataMenuGroup.id_m_roles)
+    }
     todoGetData()
-  }, [])
+  }, [location.state.id])
 
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Form Create Menu Group</CCardHeader>
+        <CCardHeader>Form Update Menu Group</CCardHeader>
         <CCardBody>
-          <CForm onSubmit={todoSave}>
+          <CForm onSubmit={todoUpdate}>
             <CInputGroup className="mb-3">
               <CInputGroupText>Name</CInputGroupText>
               <CFormInput
@@ -100,4 +107,4 @@ const MMenuGroupCreate = () => {
   )
 }
 
-export default MMenuGroupCreate
+export default MMenuGroupUpdate
