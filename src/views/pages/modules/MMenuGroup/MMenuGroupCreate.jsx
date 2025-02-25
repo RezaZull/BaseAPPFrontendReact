@@ -13,7 +13,6 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
 const MMenuGroupCreate = () => {
@@ -24,15 +23,12 @@ const MMenuGroupCreate = () => {
   const Navigate = useNavigate()
   const todoSave = async (e) => {
     e.preventDefault()
-    const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
       flag_active,
       id_m_roles,
-      user_id: userId.user.id,
     }
     const resAPi = await ApiService.postDataJWT('/mMenuGroup', data)
-    console.log(resAPi)
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {

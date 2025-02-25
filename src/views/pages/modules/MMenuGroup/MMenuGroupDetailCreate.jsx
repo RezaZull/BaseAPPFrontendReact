@@ -12,7 +12,6 @@ import {
 } from '@coreui/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
 const MMenuGroupDetailCreate = () => {
@@ -30,7 +29,6 @@ const MMenuGroupDetailCreate = () => {
   const todoSave = async (e) => {
     e.preventDefault()
     const id_m_menu_groups = location.state.id_menu_group
-    const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       id_m_menu_groups,
       id_m_menus,
@@ -41,10 +39,8 @@ const MMenuGroupDetailCreate = () => {
       flag_import,
       flag_export,
       flag_active,
-      user_id: userId.user.id,
     }
     const resAPi = await ApiService.postDataJWT('/mMenuGroupDetail', data)
-    console.log(resAPi)
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -74,7 +70,7 @@ const MMenuGroupDetailCreate = () => {
               <CCol xs={6}>
                 <CFormSelect
                   className="mb-3"
-                  label="Roles"
+                  label="Menus"
                   value={id_m_menus}
                   onChange={(val) => setIdMMenus(val.target.value)}
                 >
@@ -98,7 +94,6 @@ const MMenuGroupDetailCreate = () => {
                   size="lg"
                   onChange={(val) => {
                     if (!val.target.checked) {
-                      console.log('wow')
                       setFlagCreate(false)
                       setFlagRead(false)
                       setFlagUpdate(false)

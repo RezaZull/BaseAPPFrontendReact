@@ -13,7 +13,6 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
 const MUserCreate = () => {
@@ -32,7 +31,6 @@ const MUserCreate = () => {
   }
   const todoSave = async (e) => {
     e.preventDefault()
-    const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       first_name,
       last_name,
@@ -41,7 +39,6 @@ const MUserCreate = () => {
       id_m_roles,
       password,
       flag_active,
-      user_id: userId.user.id,
     }
     const resAPi = await ApiService.postDataJWT('/mUser', data)
     if (resAPi.data.success) {

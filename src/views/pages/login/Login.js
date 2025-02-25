@@ -28,12 +28,11 @@ const Login = () => {
       password: password,
     }
     const res = await ApiService.postData('/login', data)
-    console.log(res.data.data)
     let token = res.data.access_token.token
     if (res.data.success) {
       localStorageService.setData(localStorageKey.jwtToken, token)
       localStorageService.setData(localStorageKey.authData, true)
-      localStorageService.setData(localStorageKey.user, res.data.data)
+      localStorageService.setData(localStorageKey.user, res.data.data.user)
       Navigate('/dashboard')
     }
   }

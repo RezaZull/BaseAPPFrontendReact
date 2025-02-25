@@ -4,6 +4,7 @@ const initialState = {
   sidebarShow: true,
   theme: 'light',
   isLoading: false,
+  menuPrivilage: {},
 }
 
 const changeState = (state = initialState, { type, ...rest }) => {

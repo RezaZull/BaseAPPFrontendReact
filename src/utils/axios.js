@@ -3,7 +3,6 @@ import envEndpoint from './envEndpoint'
 import { localStorageKey, localStorageService } from './localStorageService'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
-import { redirect } from 'react-router-dom'
 
 const BASEAPI = `${envEndpoint.baseAPi}/${envEndpoint.prefixApi}`
 const apiClient = axios.create({
@@ -15,6 +14,7 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    // const navigate = useNavigate()
     console.error('API call failed:', error)
     // Handle specific error cases
     if (error.response.status === 401) {
@@ -28,8 +28,7 @@ apiClient.interceptors.response.use(
         confirmButtonText: 'continue',
       }).then((res) => {
         if (res.isConfirmed) {
-          console.log('logout')
-          return redirect('/login')
+          window.location.href = '/login'
         }
       })
     } else if (error.response.status === 404) {
@@ -101,11 +100,19 @@ const ApiService = {
   },
   postDataJWT: async (endpoints, data) => {
     try {
-      const response = await apiClient.post(BASEAPI + endpoints, data, {
-        headers: {
-          Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
+      const user = await localStorageService.getData(localStorageKey.user)
+      const response = await apiClient.post(
+        BASEAPI + endpoints,
+        {
+          ...data,
+          user_id: user.id,
         },
-      })
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
+          },
+        },
+      )
       localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
       return response
     } catch (error) {
@@ -115,11 +122,16 @@ const ApiService = {
   },
   updateDataJWT: async (endpoints, data) => {
     try {
-      const response = await apiClient.put(BASEAPI + endpoints, data, {
-        headers: {
-          Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
+      const user = await localStorageService.getData(localStorageKey.user)
+      const response = await apiClient.put(
+        BASEAPI + endpoints,
+        { ...data, user_id: user.id },
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
+          },
         },
-      })
+      )
       localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
       return response
     } catch (error) {
@@ -135,7 +147,7 @@ const ApiService = {
           Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
         },
         data: {
-          user_id: user.user.id,
+          user_id: user.id,
         },
       })
       localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)

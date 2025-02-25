@@ -13,7 +13,6 @@ import {
 } from '@coreui/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
 const MMenuUpdate = () => {
@@ -26,16 +25,13 @@ const MMenuUpdate = () => {
   const todoUpdate = async (e) => {
     e.preventDefault()
     const id = location.state.id
-    const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
       route,
       description,
       flag_active,
-      user_id: userId.user.id,
     }
     const resAPi = await ApiService.updateDataJWT(`/mMenu/${id}`, data)
-    console.log(resAPi)
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {

@@ -13,7 +13,6 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
 const MMenuCreate = () => {
@@ -24,13 +23,11 @@ const MMenuCreate = () => {
   const Navigate = useNavigate()
   const todoSave = async (e) => {
     e.preventDefault()
-    const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
       route,
       description,
       flag_active,
-      user_id: userId.user.id,
     }
     const resAPi = await ApiService.postDataJWT('/mMenu', data)
     if (resAPi.data.success) {

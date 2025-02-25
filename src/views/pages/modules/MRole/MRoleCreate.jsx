@@ -12,7 +12,6 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import fireNotif from '../../../../utils/fireNotif'
 
 const MRoleCreate = () => {
@@ -21,14 +20,11 @@ const MRoleCreate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const todoSave = async (e) => {
     e.preventDefault()
-    const userId = await localStorageService.getData(localStorageKey.user)
     const data = {
       name,
       flag_active,
-      user_id: userId.user.id,
     }
     const resAPi = await ApiService.postDataJWT('/mRole', data)
-    console.log(resAPi)
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
