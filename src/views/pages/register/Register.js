@@ -43,7 +43,6 @@ const Register = () => {
       email: email,
       password: password,
       password_confirmation: password_confirmation,
-      id_m_roles: '1',
       flag_active: true,
     }
     const res = await ApiService.postData('/register', data)

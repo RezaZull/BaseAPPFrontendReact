@@ -7,10 +7,12 @@ import { cilCheckCircle, cilInfo, cilTrash, cilXCircle } from '@coreui/icons'
 import { Box, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
+import { useSelector } from 'react-redux'
 
 const MMenuGroup = () => {
   const [todo, setTodo] = useState([])
   const [roles, setRoles] = useState([])
+  const menuPrivilage = useSelector((state) => state.menuPrivilage)
   const [selectedRole, setSelectedRole] = useState({
     id: 'all',
     name: 'ALL',
@@ -96,9 +98,11 @@ const MMenuGroup = () => {
           >
             <CIcon icon={cilInfo} className="text-info" size="lg" />
           </IconButton>
-          <IconButton onClick={() => TodoDeleteData(row.original.id)}>
-            <CIcon icon={cilTrash} className="text-danger" size="lg" />
-          </IconButton>
+          {menuPrivilage.flag_delete ? (
+            <IconButton onClick={() => TodoDeleteData(row.original.id)}>
+              <CIcon icon={cilTrash} className="text-danger" size="lg" />
+            </IconButton>
+          ) : null}
         </Box>
       )
 
@@ -129,18 +133,20 @@ const MMenuGroup = () => {
               </CFormSelect>
             </CCol>
           </CRow>
-          <CRow>
-            <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
-              <CButton
-                onClick={() => {
-                  Navigate('/mastermenugroup/create')
-                }}
-                color="primary"
-              >
-                Add
-              </CButton>
-            </CCol>
-          </CRow>
+          {menuPrivilage.flag_create ? (
+            <CRow>
+              <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
+                <CButton
+                  onClick={() => {
+                    Navigate('/mastermenugroup/create')
+                  }}
+                  color="primary"
+                >
+                  Add
+                </CButton>
+              </CCol>
+            </CRow>
+          ) : null}
           <CRow>
             <CCol>
               <MaterialReactTable table={tabel} />

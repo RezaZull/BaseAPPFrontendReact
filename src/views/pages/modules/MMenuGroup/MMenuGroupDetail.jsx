@@ -7,6 +7,7 @@ import { cilCheckCircle, cilPen, cilTrash, cilXCircle } from '@coreui/icons'
 import { Box, IconButton } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
+import { useSelector } from 'react-redux'
 
 const MMenuGroupDetail = () => {
   const [menuGroup, setMenuGroup] = useState([])
@@ -15,6 +16,8 @@ const MMenuGroupDetail = () => {
   const [selectedRole, setSelectedRole] = useState('')
   const location = useLocation()
   const Navigate = useNavigate()
+  const menuPrivilage = useSelector((state) => state.menuPrivilage)
+
   const onChangeRole = (idRole) => {
     setSelectedRole(idRole)
   }
@@ -151,22 +154,27 @@ const MMenuGroupDetail = () => {
     data: MemoTodo,
     enableRowActions: true,
     renderRowActions: ({ row }) => {
-      const action = (
-        <Box>
-          <IconButton
-            onClick={() =>
-              Navigate('/mastermenugroup/detail/update', {
-                state: { id: row.original.id, id_menu_group: menuGroup.id },
-              })
-            }
-          >
-            <CIcon icon={cilPen} className="text-warning" size="lg" />
-          </IconButton>
-          <IconButton onClick={() => TodoDeleteData(row.original.id)}>
-            <CIcon icon={cilTrash} className="text-danger" size="lg" />
-          </IconButton>
-        </Box>
-      )
+      const action =
+        menuPrivilage.flag_update || menuPrivilage.flag_delete ? (
+          <Box>
+            {menuPrivilage.flag_update ? (
+              <IconButton
+                onClick={() =>
+                  Navigate('/mastermenugroup/detail/update', {
+                    state: { id: row.original.id, id_menu_group: menuGroup.id },
+                  })
+                }
+              >
+                <CIcon icon={cilPen} className="text-warning" size="lg" />
+              </IconButton>
+            ) : null}
+            {menuPrivilage.flag_delete ? (
+              <IconButton onClick={() => TodoDeleteData(row.original.id)}>
+                <CIcon icon={cilTrash} className="text-danger" size="lg" />
+              </IconButton>
+            ) : null}
+          </Box>
+        ) : null
 
       return action
     },
@@ -177,18 +185,20 @@ const MMenuGroupDetail = () => {
       <CCard className="mb-4">
         <CCardHeader>Menu Group</CCardHeader>
         <CCardBody>
-          <CRow>
-            <CCol style={{ display: 'flex', justifyContent: 'end' }}>
-              <CButton
-                onClick={() => {
-                  Navigate('/mastermenugroup/update', { state: { id: menuGroup.id } })
-                }}
-                color="warning"
-              >
-                Update
-              </CButton>
-            </CCol>
-          </CRow>
+          {menuPrivilage.flag_update ? (
+            <CRow>
+              <CCol style={{ display: 'flex', justifyContent: 'end' }}>
+                <CButton
+                  onClick={() => {
+                    Navigate('/mastermenugroup/update', { state: { id: menuGroup.id } })
+                  }}
+                  color="warning"
+                >
+                  Update
+                </CButton>
+              </CCol>
+            </CRow>
+          ) : null}
           <CRow className="mb-3">
             <CCol xs={4}>
               <CFormInput
@@ -222,20 +232,22 @@ const MMenuGroupDetail = () => {
       <CCard className="mb-4">
         <CCardHeader>Group Details</CCardHeader>
         <CCardBody>
-          <CRow>
-            <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
-              <CButton
-                onClick={() => {
-                  Navigate('/mastermenugroup/detail/create', {
-                    state: { id_menu_group: menuGroup.id },
-                  })
-                }}
-                color="primary"
-              >
-                Add
-              </CButton>
-            </CCol>
-          </CRow>
+          {menuPrivilage.flag_create ? (
+            <CRow>
+              <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
+                <CButton
+                  onClick={() => {
+                    Navigate('/mastermenugroup/detail/create', {
+                      state: { id_menu_group: menuGroup.id },
+                    })
+                  }}
+                  color="primary"
+                >
+                  Add
+                </CButton>
+              </CCol>
+            </CRow>
+          ) : null}
           <CRow>
             <CCol>
               <MaterialReactTable table={tabel} />

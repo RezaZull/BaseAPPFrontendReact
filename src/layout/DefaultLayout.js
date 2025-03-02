@@ -1,25 +1,32 @@
 import React, { useEffect } from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { localStorageKey, localStorageService } from '../utils/localStorageService'
 import { useDispatch } from 'react-redux'
 
 const DefaultLayout = () => {
   const location = useLocation()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   useEffect(() => {
     const getLocalData = async () => {
       const menusPrivilage = await localStorageService.getData(localStorageKey.user)
+      let menus = 'none'
       for (const MenuGroup of menusPrivilage.role.menu_group) {
         for (const menusDetail of MenuGroup.menu_group_detail) {
           if (menusDetail.menu.route == location.pathname.split('/')[1]) {
-            dispatch({ type: 'set', menuPrivilage: menusDetail })
+            menus = menusDetail
           }
         }
       }
+      if (menus != 'none') {
+        dispatch({ type: 'set', menuPrivilage: menus })
+      } else {
+        return navigate('/500')
+      }
     }
     getLocalData()
-  }, [dispatch, location.pathname])
+  }, [dispatch, location.pathname, navigate])
   return (
     <div>
       <AppSidebar />

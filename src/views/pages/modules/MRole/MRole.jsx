@@ -7,10 +7,13 @@ import { cilCheckCircle, cilPen, cilTrash, cilXCircle } from '@coreui/icons'
 import { Box, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
+import { useSelector } from 'react-redux'
 
 const MRole = () => {
   const [todo, setTodo] = useState([])
   const Navigate = useNavigate()
+  const menuPrivilage = useSelector((state) => state.menuPrivilage)
+
   const TodoGetData = async () => {
     const res = await ApiService.getDataJWT('/mRole')
     setTodo(res.data.data)
@@ -62,18 +65,24 @@ const MRole = () => {
     data: MemoTodo,
     enableRowActions: true,
     renderRowActions: ({ row }) => {
-      const action = (
-        <Box>
-          <IconButton
-            onClick={() => Navigate('/masterrole/update', { state: { id: row.original.id } })}
-          >
-            <CIcon icon={cilPen} className="text-warning" size="lg" />
-          </IconButton>
-          <IconButton onClick={() => TodoDeleteData(row.original.id)}>
-            <CIcon icon={cilTrash} className="text-danger" size="lg" />
-          </IconButton>
-        </Box>
-      )
+      const action =
+        menuPrivilage.flag_update || menuPrivilage.flag_delete ? (
+          <Box>
+            {menuPrivilage.flag_update ? (
+              <IconButton
+                onClick={() => Navigate('/masterrole/update', { state: { id: row.original.id } })}
+              >
+                <CIcon icon={cilPen} className="text-warning" size="lg" />
+              </IconButton>
+            ) : null}
+
+            {menuPrivilage.flag_delete ? (
+              <IconButton onClick={() => TodoDeleteData(row.original.id)}>
+                <CIcon icon={cilTrash} className="text-danger" size="lg" />
+              </IconButton>
+            ) : null}
+          </Box>
+        ) : null
 
       return action
     },
@@ -84,18 +93,20 @@ const MRole = () => {
       <CCard className="mb-4">
         <CCardHeader>Master Role</CCardHeader>
         <CCardBody>
-          <CRow>
-            <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
-              <CButton
-                onClick={() => {
-                  Navigate('/masterrole/create')
-                }}
-                color="primary"
-              >
-                Add
-              </CButton>
-            </CCol>
-          </CRow>
+          {menuPrivilage.flag_create ? (
+            <CRow>
+              <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
+                <CButton
+                  onClick={() => {
+                    Navigate('/masterrole/create')
+                  }}
+                  color="primary"
+                >
+                  Add
+                </CButton>
+              </CCol>
+            </CRow>
+          ) : null}
           <CRow>
             <CCol>
               <MaterialReactTable table={tabel} />
