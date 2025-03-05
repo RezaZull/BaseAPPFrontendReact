@@ -7,7 +7,7 @@ import { cilCheckCircle, cilInfo, cilTrash, cilXCircle } from '@coreui/icons'
 import { Box, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const MMenuGroup = () => {
   const [todo, setTodo] = useState([])
@@ -18,6 +18,7 @@ const MMenuGroup = () => {
     name: 'ALL',
   })
   const Navigate = useNavigate()
+  const dispatch = useDispatch()
   const TodoGetData = async () => {
     const res = await ApiService.getDataJWT('/mMenuGroup')
     setTodo(res.data.data)
@@ -43,7 +44,9 @@ const MMenuGroup = () => {
   const TodoDeleteData = async (id) => {
     fireNotif.notifWarning('Delete this item?').then(async (swalRes) => {
       if (swalRes.isConfirmed) {
+        dispatch({ type: 'set', isLoading: true })
         const resAPi = await ApiService.deleteDataJWT('/mMenuGroup', id)
+        dispatch({ type: 'set', isLoading: false })
         if (resAPi.data.success) {
           fireNotif.notifSuccess('Succesfully delete data').then((res) => {
             if (res.isConfirmed) {

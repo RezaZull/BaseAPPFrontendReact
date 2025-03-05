@@ -14,6 +14,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MMenuGroupUpdate = () => {
   const [name, setName] = useState('')
@@ -22,6 +23,7 @@ const MMenuGroupUpdate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
 
   const todoUpdate = async (e) => {
     e.preventDefault()
@@ -31,7 +33,9 @@ const MMenuGroupUpdate = () => {
       flag_active,
       id_m_roles,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.updateDataJWT(`/mMenuGroup/${menuGroupId}`, data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -43,6 +47,7 @@ const MMenuGroupUpdate = () => {
 
   useEffect(() => {
     const todoGetData = async () => {
+      dispatch({ type: 'set', isLoading: true })
       const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
       setRoles(resAPI.data.data)
       const menuGroupId = location.state.id
@@ -51,9 +56,10 @@ const MMenuGroupUpdate = () => {
       setName(dataMenuGroup.name)
       setFlagActive(dataMenuGroup.flag_active)
       setIdMRoles(dataMenuGroup.id_m_roles)
+      dispatch({ type: 'set', isLoading: false })
     }
     todoGetData()
-  }, [location.state.id])
+  }, [location.state.id, dispatch])
 
   return (
     <>

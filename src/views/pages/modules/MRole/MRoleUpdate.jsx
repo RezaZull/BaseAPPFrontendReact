@@ -13,12 +13,14 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MRoleUpdate = () => {
   const [name, setName] = useState('')
   const Navigate = useNavigate()
   const [flag_active, setFlagActive] = useState(true)
   const location = useLocation()
+  const dispatch = useDispatch()
   const todoUpdate = async (e) => {
     e.preventDefault()
     const id = location.state.id
@@ -26,7 +28,9 @@ const MRoleUpdate = () => {
       name,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.updateDataJWT(`/mRole/${id}`, data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {

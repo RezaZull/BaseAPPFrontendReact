@@ -13,6 +13,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MMenuGroupDetailCreate = () => {
   const [id_m_menus, setIdMMenus] = useState('')
@@ -26,6 +27,7 @@ const MMenuGroupDetailCreate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
   const todoSave = async (e) => {
     e.preventDefault()
     const id_m_menu_groups = location.state.id_menu_group
@@ -40,7 +42,10 @@ const MMenuGroupDetailCreate = () => {
       flag_export,
       flag_active,
     }
+
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.postDataJWT('/mMenuGroupDetail', data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -50,15 +55,16 @@ const MMenuGroupDetailCreate = () => {
     }
   }
 
-  const todoGetData = async () => {
-    const resAPI = await ApiService.getDataJWT('/mMenu?searchParam=flag_active&searchValue=true')
-    setMenus(resAPI.data.data)
-    setIdMMenus(resAPI.data.data[0].id)
-  }
-
   useEffect(() => {
+    const todoGetData = async () => {
+      dispatch({ type: 'set', isLoading: true })
+      const resAPI = await ApiService.getDataJWT('/mMenu?searchParam=flag_active&searchValue=true')
+      dispatch({ type: 'set', isLoading: false })
+      setMenus(resAPI.data.data)
+      setIdMMenus(resAPI.data.data[0].id)
+    }
     todoGetData()
-  }, [])
+  }, [dispatch])
 
   return (
     <>

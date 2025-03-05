@@ -14,6 +14,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MUserUpdate = () => {
   const [first_name, setFirstName] = useState('')
@@ -25,6 +26,7 @@ const MUserUpdate = () => {
   const [roles, setRoles] = useState([])
   const Navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
   const todoUpdate = async (e) => {
     e.preventDefault()
     const id = location.state.id
@@ -36,7 +38,9 @@ const MUserUpdate = () => {
       id_m_roles,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.updateDataJWT(`/mUser/${id}`, data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -48,6 +52,7 @@ const MUserUpdate = () => {
 
   useEffect(() => {
     const todoGetData = async () => {
+      dispatch({ type: 'set', isLoading: true })
       const id = location.state.id
       const resAPI = await ApiService.getDataJWT(`/mUser/${id}`)
       const data = resAPI.data.data
@@ -61,6 +66,7 @@ const MUserUpdate = () => {
       setEmail(data.email)
       setIdMRoles(data.id_m_roles)
       setFlagActive(data.flag_active)
+      dispatch({ type: 'set', isLoading: false })
     }
     todoGetData()
   }, [location.state.id])

@@ -13,18 +13,22 @@ import {
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MRoleCreate = () => {
   const [name, setName] = useState('')
   const Navigate = useNavigate()
   const [flag_active, setFlagActive] = useState(true)
+  const dispatch = useDispatch()
   const todoSave = async (e) => {
     e.preventDefault()
     const data = {
       name,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.postDataJWT('/mRole', data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {

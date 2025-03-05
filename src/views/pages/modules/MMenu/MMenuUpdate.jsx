@@ -14,6 +14,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MMenuUpdate = () => {
   const [name, setName] = useState('')
@@ -22,6 +23,7 @@ const MMenuUpdate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
   const todoUpdate = async (e) => {
     e.preventDefault()
     const id = location.state.id
@@ -31,7 +33,9 @@ const MMenuUpdate = () => {
       description,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.updateDataJWT(`/mMenu/${id}`, data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {

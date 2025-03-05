@@ -16,6 +16,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MMenuGroupDetailUpdate = () => {
   const [id_m_menus, setIdMMenus] = useState('')
@@ -29,6 +30,7 @@ const MMenuGroupDetailUpdate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
   const todoUpdate = async (e) => {
     e.preventDefault()
     const id_m_menu_groups = location.state.id_menu_group
@@ -44,7 +46,9 @@ const MMenuGroupDetailUpdate = () => {
       flag_export,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.updateDataJWT(`/mMenuGroupDetail/${id_menu_group_detail}`, data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Update Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -57,6 +61,7 @@ const MMenuGroupDetailUpdate = () => {
   useEffect(() => {
     const todoGetData = async () => {
       const id_menu_group_detail = location.state.id
+      dispatch({ type: 'set', isLoading: true })
       const resDetail = await ApiService.getDataJWT(`/mMenuGroupDetail/${id_menu_group_detail}`)
       const dataDetail = resDetail.data.data
       setIdMMenus(dataDetail.id_m_menus)
@@ -69,9 +74,10 @@ const MMenuGroupDetailUpdate = () => {
       setFlagExport(dataDetail.flag_export)
       const resAPI = await ApiService.getDataJWT('/mMenu?searchParam=flag_active&searchValue=true')
       setMenus(resAPI.data.data)
+      dispatch({ type: 'set', isLoading: false })
     }
     todoGetData()
-  }, [location.state.id])
+  }, [location.state.id, dispatch])
 
   return (
     <>

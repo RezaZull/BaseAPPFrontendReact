@@ -14,6 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MUserCreate = () => {
   const [first_name, setFirstName] = useState('')
@@ -25,10 +26,7 @@ const MUserCreate = () => {
   const [flag_active, setFlagActive] = useState(true)
   const [roles, setRoles] = useState([])
   const Navigate = useNavigate()
-  const todoGetData = async () => {
-    const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
-    setRoles(resAPI.data.data)
-  }
+  const dispatch = useDispatch()
   const todoSave = async (e) => {
     e.preventDefault()
     const data = {
@@ -40,7 +38,9 @@ const MUserCreate = () => {
       password,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.postDataJWT('/mUser', data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
@@ -50,8 +50,14 @@ const MUserCreate = () => {
     }
   }
   useEffect(() => {
+    const todoGetData = async () => {
+      dispatch({ type: 'set', isLoading: true })
+      const resAPI = await ApiService.getDataJWT('/mRole?searchParam=flag_active&searchValue=true')
+      dispatch({ type: 'set', isLoading: false })
+      setRoles(resAPI.data.data)
+    }
     todoGetData()
-  }, [])
+  }, [dispatch])
 
   return (
     <>

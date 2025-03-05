@@ -14,6 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
+import { useDispatch } from 'react-redux'
 
 const MMenuCreate = () => {
   const [name, setName] = useState('')
@@ -21,6 +22,7 @@ const MMenuCreate = () => {
   const [description, setDescription] = useState('')
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
+  const dispatch = useDispatch()
   const todoSave = async (e) => {
     e.preventDefault()
     const data = {
@@ -29,7 +31,9 @@ const MMenuCreate = () => {
       description,
       flag_active,
     }
+    dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.postDataJWT('/mMenu', data)
+    dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
