@@ -33,7 +33,7 @@ const Login = () => {
       localStorageService.setData(localStorageKey.jwtToken, token)
       localStorageService.setData(localStorageKey.authData, true)
       localStorageService.setData(localStorageKey.user, res.data.data.user)
-      Navigate('/dashboard')
+      Navigate('/profile')
     }
   }
   return (

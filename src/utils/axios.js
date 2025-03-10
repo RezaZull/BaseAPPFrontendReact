@@ -120,6 +120,35 @@ const ApiService = {
       return error
     }
   },
+
+  uploadFile: async (endpoints, data) => {
+    try {
+      return await apiClient.post(BASEAPI + endpoints, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    } catch (error) {
+      console.error(error)
+      return error
+    }
+  },
+  uploadFileJWT: async (endpoints, data) => {
+    try {
+      const user = await localStorageService.getData(localStorageKey.user)
+      const response = await apiClient.post(BASEAPI + endpoints, data, {
+        headers: {
+          Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+      return response
+    } catch (error) {
+      console.error(error)
+      return error
+    }
+  },
   updateDataJWT: async (endpoints, data) => {
     try {
       const user = await localStorageService.getData(localStorageKey.user)

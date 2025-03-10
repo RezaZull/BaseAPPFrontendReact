@@ -1,6 +1,8 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Profile = React.lazy(() => import('./views/pages/modules/Profile/Profile'))
+const Logout = React.lazy(() => import('./views/pages/logout/Logout'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 const Base = React.lazy(() => import('./views/base/Baseweb'))
@@ -33,6 +35,8 @@ const MMenuGroupDetailUpdate = React.lazy(
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/profile', name: 'Profile', element: Profile },
+  { path: '/logout', name: 'Profile', element: Logout },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/base', name: 'Base Page', element: Base },
   { path: '/appsetting', name: 'AppSetting', element: AppSetting },

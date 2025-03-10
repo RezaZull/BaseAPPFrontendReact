@@ -12,19 +12,24 @@ const DefaultLayout = () => {
   const isLoading = useSelector((state) => state.isLoading)
   useEffect(() => {
     const getLocalData = async () => {
-      const menusPrivilage = await localStorageService.getData(localStorageKey.user)
-      let menus = 'none'
-      for (const MenuGroup of menusPrivilage.role.menu_group) {
-        for (const menusDetail of MenuGroup.menu_group_detail) {
-          if (menusDetail.menu.route == location.pathname.split('/')[1]) {
-            menus = menusDetail
+      if (
+        location.pathname.split('/')[1] != 'profile' &&
+        location.pathname.split('/')[1] != 'logout'
+      ) {
+        const menusPrivilage = await localStorageService.getData(localStorageKey.user)
+        let menus = 'none'
+        for (const MenuGroup of menusPrivilage.role.menu_group) {
+          for (const menusDetail of MenuGroup.menu_group_detail) {
+            if (menusDetail.menu.route == location.pathname.split('/')[1]) {
+              menus = menusDetail
+            }
           }
         }
-      }
-      if (menus != 'none') {
-        dispatch({ type: 'set', menuPrivilage: menus })
-      } else {
-        return navigate('/500')
+        if (menus != 'none') {
+          dispatch({ type: 'set', menuPrivilage: menus })
+        } else {
+          return navigate('/500')
+        }
       }
     }
     getLocalData()
