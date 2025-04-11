@@ -78,16 +78,25 @@ const Profile = () => {
       <ModalEditProfile
         showModal={showModalEditProfile}
         profile={profile}
-        onCloseModal={() => setModalEditProfile(false)}
+        onCloseModal={() => {
+          getData()
+          setModalEditProfile(false)
+        }}
       />
       <ModalEditPassword
         showModal={showModalEditPassword}
-        onCloseModal={() => setModalEditPassword(false)}
+        onCloseModal={() => {
+          getData()
+          setModalEditPassword(false)
+        }}
         profile={profile}
       />
       <ModalEditPictures
         showModal={showModalEditPictutes}
-        onCloseModal={() => setModalEditPictures(false)}
+        onCloseModal={() => {
+          getData()
+          setModalEditPictures(false)
+        }}
         profile={profile}
       />
     </>
